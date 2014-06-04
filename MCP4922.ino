@@ -2,12 +2,8 @@
 #include <SPI.h>
 #define LDAC   9              // ラッチ動作出力ピン
 
-// set timecourse of pulsed light as you like
-int CYCLE = 10;    // pulse cycle [sec]
-double DUTY1 = 30;     // first duty ratio [%]
-double DUTY2 = 30;     // second duty ratio [%]
-double VOLT1 = 9.99;     // output during first duty ratio [V]
-double VOLT2 = 5;   // output during second duty ratio [V]
+// set timecourse of light strength during light term
+
 
 void setup() {
      Serial.begin(9600);
