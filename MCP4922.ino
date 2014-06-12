@@ -4,20 +4,33 @@
 #include <RTC8564.h>
 
 #define LDAC   9              // ラッチ動作出力ピン
-long HOUR[8][3];
-long MIN[8][3];
-long SEC[8][3];
-long TIME[8][3];
-double VOLT[8][3];
-int v[8][3];
-int print[8];
+long HOUR[14][3];
+long MIN[14][3];
+long SEC[14][3];
+long TIME[14][3];
+double VOLT[14][3];
+int v[14][3];
+int print[14];
 int is;
 
 void setup() {
+     int i;
      Serial.begin(9600);
      Rtc.begin();
      // 制御するピンは全て出力に設定する
      pinMode(LDAC,OUTPUT) ;
+     // set output pin0-8 as SS0–8 for machine #0-8
+     pinMode(2, OUTPUT);
+     pinMode(3, OUTPUT);
+     pinMode(4, OUTPUT);
+     pinMode(5, OUTPUT);
+     pinMode(6, OUTPUT);
+     pinMode(7, OUTPUT);     
+     pinMode(8, OUTPUT);
+     // initialize SS0–8
+     for(i = 0; i <= 8; i++){
+          digitalWrite(i, HIGH);
+     }
      // SPIの初期化処理を行う
      SPI.begin() ;                        // ＳＰＩを行う為の初期化
      SPI.setBitOrder(MSBFIRST) ;          // ビットオーダー
@@ -27,155 +40,265 @@ void setup() {
      // set timecourse of light strength during light term 
      // machine #0
      // set output voltage and beginning time of light term 1 as 24 hour format
-     HOUR[0][0] = 19;
-     MIN[0][0] = 21;
+     HOUR[0][0] = 13;
+     MIN[0][0] = 45;
      SEC[0][0] = 0;
      VOLT[0][0] = 10;
      // set output voltage and beginning time of light term 2 as 24 hour format
-     HOUR[0][1] = 19;
-     MIN[0][1] = 21;
+     HOUR[0][1] = 13;
+     MIN[0][1] = 45;
      SEC[0][1] = 10;
-     VOLT[0][1] = 5;
+     VOLT[0][1] = 0;
      // set output voltage and beginning time light term 3 as 24 hour format
-     HOUR[0][2] = 19;
-     MIN[0][2] = 21;
+     HOUR[0][2] = 13;
+     MIN[0][2] = 45;
      SEC[0][2] = 20;
-     VOLT[0][2] = 0;
+     VOLT[0][2] = 5;
 
      // machine #1
      // set output voltage and beginning time of light term 1 as 24 hour format
-     HOUR[1][0] = 19;
-     MIN[1][0] = 21;
+     HOUR[1][0] = 20;
+     MIN[1][0] = 15;
      SEC[1][0] = 0;
-     VOLT[1][0] = 1;
+     VOLT[1][0] = 0;
      // set output voltage and beginning time of light term 2 as 24 hour format
-     HOUR[1][1] = 19;
-     MIN[1][1] = 21;
+     HOUR[1][1] = 20;
+     MIN[1][1] = 15;
      SEC[1][1] = 10;
-     VOLT[1][1] = 2;
+     VOLT[1][1] = 5;
      // set output voltage and beginning time light term 3 as 24 hour format
-     HOUR[1][2] = 19;
-     MIN[1][2] = 21;
+     HOUR[1][2] = 20;
+     MIN[1][2] = 15;
      SEC[1][2] = 20;
-     VOLT[1][2] = 1;
+     VOLT[1][2] = 10;
 
      // machine #2
      // set output voltage and beginning time of light term 1 as 24 hour format
-     HOUR[2][0] = 19;
-     MIN[2][0] = 21;
+     HOUR[2][0] = 20;
+     MIN[2][0] = 15;
      SEC[2][0] = 0;
      VOLT[2][0] = 10;
      // set output voltage and beginning time of light term 2 as 24 hour format
-     HOUR[2][1] = 19;
-     MIN[2][1] = 21;
+     HOUR[2][1] = 20;
+     MIN[2][1] = 15;
      SEC[2][1] = 10;
      VOLT[2][1] = 5;
      // set output voltage and beginning time light term 3 as 24 hour format
-     HOUR[2][2] = 19;
-     MIN[2][2] = 21;
+     HOUR[2][2] = 20;
+     MIN[2][2] = 15;
      SEC[2][2] = 20;
-     VOLT[2][2] = 2;
+     VOLT[2][2] = 0;
 
      // machine #3
      // set output voltage and beginning time of light term 1 as 24 hour format
-     HOUR[3][0] = 19;
-     MIN[3][0] = 21;
+     HOUR[3][0] = 20;
+     MIN[3][0] = 15;
      SEC[3][0] = 0;
-     VOLT[3][0] = 10;
+     VOLT[3][0] = 0;
      // set output voltage and beginning time of light term 2 as 24 hour format
-     HOUR[3][1] = 19;
-     MIN[3][1] = 21;
+     HOUR[3][1] = 20;
+     MIN[3][1] = 15;
      SEC[3][1] = 10;
      VOLT[3][1] = 5;
      // set output voltage and beginning time light term 3 as 24 hour format
-     HOUR[3][2] = 19;
-     MIN[3][2] = 21;
+     HOUR[3][2] = 20;
+     MIN[3][2] = 15;
      SEC[3][2] = 20;
-     VOLT[3][2] = 3;
+     VOLT[3][2] = 10;
 
      // machine #4
      // set output voltage and beginning time of light term 1 as 24 hour format
-     HOUR[4][0] = 19;
-     MIN[4][0] = 21;
+     HOUR[4][0] = 20;
+     MIN[4][0] = 15;
      SEC[4][0] = 0;
      VOLT[4][0] = 10;
      // set output voltage and beginning time of light term 2 as 24 hour format
-     HOUR[4][1] = 19;
-     MIN[4][1] = 21;
+     HOUR[4][1] = 20;
+     MIN[4][1] = 15;
      SEC[4][1] = 10;
      VOLT[4][1] = 5;
      // set output voltage and beginning time light term 3 as 24 hour format
-     HOUR[4][2] = 19;
-     MIN[4][2] = 21;
+     HOUR[4][2] = 20;
+     MIN[4][2] = 15;
      SEC[4][2] = 20;
-     VOLT[4][2] = 4;
+     VOLT[4][2] = 0;
 
      // machine #5
      // set output voltage and beginning time of light term 1 as 24 hour format
-     HOUR[5][0] = 19;
-     MIN[5][0] = 21;
+     HOUR[5][0] = 20;
+     MIN[5][0] = 15;
      SEC[5][0] = 0;
-     VOLT[5][0] = 1;
+     VOLT[5][0] = 0;
      // set output voltage and beginning time of light term 2 as 24 hour format
-     HOUR[5][1] = 19;
-     MIN[5][1] = 21;
+     HOUR[5][1] = 20;
+     MIN[5][1] = 15;
      SEC[5][1] = 10;
      VOLT[5][1] = 5;
      // set output voltage and beginning time light term 3 as 24 hour format
-     HOUR[5][2] = 19;
-     MIN[5][2] = 21;
+     HOUR[5][2] = 20;
+     MIN[5][2] = 15;
      SEC[5][2] = 20;
-     VOLT[5][2] = 5;
+     VOLT[5][2] = 10;
 
      // machine #6
      // set output voltage and beginning time of light term 1 as 24 hour format
-     HOUR[6][0] = 19;
-     MIN[6][0] = 21;
+     HOUR[6][0] = 20;
+     MIN[6][0] = 15;
      SEC[6][0] = 0;
-     VOLT[6][0] = 0;
+     VOLT[6][0] = 10;
      // set output voltage and beginning time of light term 2 as 24 hour format
-     HOUR[6][1] = 19;
-     MIN[6][1] = 21;
+     HOUR[6][1] = 20;
+     MIN[6][1] = 15;
      SEC[6][1] = 10;
      VOLT[6][1] = 5;
      // set output voltage and beginning time light term 3 as 24 hour format
-     HOUR[6][2] = 19;
-     MIN[6][2] = 21;
+     HOUR[6][2] = 20;
+     MIN[6][2] = 15;
      SEC[6][2] = 20;
-     VOLT[6][2] = 6;
+     VOLT[6][2] = 0;
 
      // machine #7
      // set output voltage and beginning time of light term 1 as 24 hour format
-     HOUR[7][0] = 19;
-     MIN[7][0] = 21;
+     HOUR[7][0] = 20;
+     MIN[7][0] = 15;
      SEC[7][0] = 0;
-     VOLT[7][0] = 10;
+     VOLT[7][0] = 0;
      // set output voltage and beginning time of light term 2 as 24 hour format
-     HOUR[7][1] = 19;
-     MIN[7][1] = 21;
+     HOUR[7][1] = 20;
+     MIN[7][1] = 15;
      SEC[7][1] = 10;
      VOLT[7][1] = 5;
      // set output voltage and beginning time light term 3 as 24 hour format
-     HOUR[7][2] = 19;
-     MIN[7][2] = 21;
+     HOUR[7][2] = 20;
+     MIN[7][2] = 15;
      SEC[7][2] = 20;
-     VOLT[7][2] = 7.5;
+     VOLT[7][2] = 10;
+
+     // machine #8
+     // set output voltage and beginning time of light term 1 as 24 hour format
+     HOUR[8][0] = 0;
+     MIN[8][0] = 0;
+     SEC[8][0] = 0;
+     VOLT[8][0] = 0;
+     // set output voltage and beginning time of light term 2 as 24 hour format
+     HOUR[8][1] = 0;
+     MIN[8][1] = 0;
+     SEC[8][1] = 0;
+     VOLT[8][1] = 0;
+     // set output voltage and beginning time light term 3 as 24 hour format
+     HOUR[8][2] = 0;
+     MIN[8][2] = 0;
+     SEC[8][2] = 0;
+     VOLT[8][2] = 0;
+
+     // machine #9
+     // set output voltage and beginning time of light term 1 as 24 hour format
+     HOUR[9][0] = 0;
+     MIN[9][0] = 0;
+     SEC[9][0] = 0;
+     VOLT[9][0] = 0;
+     // set output voltage and beginning time of light term 2 as 24 hour format
+     HOUR[9][1] = 0;
+     MIN[9][1] = 0;
+     SEC[9][1] = 0;
+     VOLT[9][1] = 0;
+     // set output voltage and beginning time light term 3 as 24 hour format
+     HOUR[9][2] = 0;
+     MIN[9][2] = 0;
+     SEC[9][2] = 0;
+     VOLT[9][2] = 0;
+
+     // machine #10
+     // set output voltage and beginning time of light term 1 as 24 hour format
+     HOUR[10][0] = 0;
+     MIN[10][0] = 0;
+     SEC[10][0] = 0;
+     VOLT[10][0] = 0;
+     // set output voltage and beginning time of light term 2 as 24 hour format
+     HOUR[10][1] = 0;
+     MIN[10][1] = 0;
+     SEC[10][1] = 0;
+     VOLT[10][1] = 0;
+     // set output voltage and beginning time light term 3 as 24 hour format
+     HOUR[10][2] = 0;
+     MIN[10][2] = 0;
+     SEC[10][2] = 0;
+     VOLT[10][2] = 0;
+
+     // machine #11
+     // set output voltage and beginning time of light term 1 as 24 hour format
+     HOUR[11][0] = 13;
+     MIN[11][0] = 46;
+     SEC[11][0] = 0;
+     VOLT[11][0] = 3;
+     // set output voltage and beginning time of light term 2 as 24 hour format
+     HOUR[11][1] = 13;
+     MIN[11][1] = 46;
+     SEC[11][1] = 10;
+     VOLT[11][1] = 6;
+     // set output voltage and beginning time light term 3 as 24 hour format
+     HOUR[11][2] = 13;
+     MIN[11][2] = 46;
+     SEC[11][2] = 20;
+     VOLT[11][2] = 9;
+
+     // machine #12
+     // set output voltage and beginning time of light term 1 as 24 hour format
+     HOUR[12][0] = 0;
+     MIN[12][0] = 0;
+     SEC[12][0] = 0;
+     VOLT[12][0] = 0;
+     // set output voltage and beginning time of light term 2 as 24 hour format
+     HOUR[12][1] = 0;
+     MIN[12][1] = 0;
+     SEC[12][1] = 0;
+     VOLT[12][1] = 0;
+     // set output voltage and beginning time light term 3 as 24 hour format
+     HOUR[12][2] = 0;
+     MIN[12][2] = 0;
+     SEC[12][2] = 0;
+     VOLT[12][2] = 0;
+
+     // machine #13
+     // set output voltage and beginning time of light term 1 as 24 hour format
+     HOUR[13][0] = 0;
+     MIN[13][0] = 0;
+     SEC[13][0] = 0;
+     VOLT[13][0] = 0;
+     // set output voltage and beginning time of light term 2 as 24 hour format
+     HOUR[13][1] = 0;
+     MIN[13][1] = 0;
+     SEC[13][1] = 0;
+     VOLT[13][1] = 0;
+     // set output voltage and beginning time light term 3 as 24 hour format
+     HOUR[13][2] = 0;
+     MIN[13][2] = 0;
+     SEC[13][2] = 0;
+     VOLT[13][2] = 0;
 
      // get a timecourse of output voltage
      getTimecourse();
 }
 
 void loop() {
-     int i;
+     int i;    // count for machine number
+     int sspin;
+     int mask;  // Mask for high byte
      int output;
-     for(i = 0; i <= 7; i++){
+     for(i = 0; i <= 13; i++){
+          if(i & 0x01){
+               mask = 0xb0;    // = 10110000 = OUTB/no BUF/1x/no SHD
+          }else{
+               mask = 0x30;    // = 00110000 = OUTA/no BUF/1x/no SHD
+          }
+          sspin = (i >> 1) + 2;    // SSpin0–6 = OUTPUTpin2–8
           output = getOutput(i);
-          digitalWrite(LDAC,HIGH) ;
-          digitalWrite(SS,LOW) ;
-          SPI.transfer(((output >> 8) & 0x0f) | 0x30) ; // Highバイト(0x30=OUTA/BUFなし/1x/シャットダウンなし)
-          SPI.transfer(output & 0xff) ;        // Lowバイトの出力
-          digitalWrite(SS,HIGH) ;
-          digitalWrite(LDAC,LOW) ;        // ラッチ信号を出す
+          digitalWrite(LDAC,HIGH); // close latch
+          digitalWrite(sspin, LOW);  // LOW signal to an interested SS which operates machine #i
+          SPI.transfer(((output >> 8) & 0x0f) | mask) ; // High byte
+          SPI.transfer(output & 0xff) ;        // Low byte
+          digitalWrite(sspin, HIGH) ;     // signal meaning writing data ended
+          digitalWrite(LDAC,LOW) ;        // open latch
      }
 }
 
@@ -186,7 +309,7 @@ int getOutput(int _i){
      long m;
      long s;
      long now;
-     int out;
+     int _output;
      Rtc.available();
      h = Rtc.hours(RTC8564::Decimal);
      m = Rtc.minutes(RTC8564::Decimal);
@@ -198,22 +321,22 @@ int getOutput(int _i){
           }
      }
      if((k > 0) && (k < 3)){
-          out = v[_i][k - 1];
+          _output = v[_i][k - 1];
      }else{
-          out = v[_i][2];
+          _output = v[_i][2];
      }
-     print[_i] = out;
+     print[_i] = _output;
      if(is != s){
           display(h, m, s, now);
      }
      is = s;
-     return out;
+     return _output;
 }
 
 void getTimecourse(){
      int i;
      int j;
-     for(i = 0; i <= 7; i++){
+     for(i = 0; i <= 13; i++){
           for(j = 0; j <= 2; j++){
                TIME[i][j] = 3600 * HOUR[i][j] + 60 * MIN[i][j] + SEC[i][j];
                v[i][j] = VOLT[i][j] * 4095 / 10;
@@ -232,7 +355,8 @@ void display(int _h, int _m, int _s, long _now){
      Serial.print(", ");
      Serial.print(_now);
      Serial.print(", ");
-     for(i = 0; i <= 7; i++){
+     for(i = 0; i <= 13; i++){
+          Serial.print("#");
           Serial.print(i);
           Serial.print(": ");
           Serial.print(print[i]);
