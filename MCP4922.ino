@@ -282,20 +282,20 @@ void setup() {
 
      // machine #11
      // set output voltage and beginning time of light term 1 as 24 hour format
-     HOUR[11][0] = 13;
-     MIN[11][0] = 46;
+     HOUR[11][0] = 0;
+     MIN[11][0] = 0;
      SEC[11][0] = 0;
-     VOLT[11][0] = 3;
+     VOLT[11][0] = 0;
      // set output voltage and beginning time of light term 2 as 24 hour format
-     HOUR[11][1] = 13;
-     MIN[11][1] = 46;
-     SEC[11][1] = 10;
-     VOLT[11][1] = 6;
+     HOUR[11][1] = 0;
+     MIN[11][1] = 0;
+     SEC[11][1] = 0;
+     VOLT[11][1] = 0;
      // set output voltage and beginning time light term 3 as 24 hour format
-     HOUR[11][2] = 13;
-     MIN[11][2] = 46;
-     SEC[11][2] = 20;
-     VOLT[11][2] = 9;
+     HOUR[11][2] = 0;
+     MIN[11][2] = 0;
+     SEC[11][2] = 0;
+     VOLT[11][2] = 0;
      // set output voltage and beginning time light term 4 as 24 hour format
      HOUR[11][3] = 0;
      MIN[11][3] = 0;
@@ -344,7 +344,7 @@ void setup() {
      HOUR[13][3] = 0;
      MIN[13][3] = 0;
      SEC[13][3] = 0;
-     VOLT[13][3] = 0;
+     VOLT[13][3] = 10;
 
      // get a timecourse of output voltage
      getTimecourse();
